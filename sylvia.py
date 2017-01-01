@@ -7,14 +7,22 @@ import time
 import requests
 import socket
 
+
+def checkAccess(request): 
+	if request.status_code != 404 and request.status_code != 403:
+		return True
+	else: 
+		return False
+
+
+
+
 desc = """Welcome to the Sylvia Exploit Detection Program
 Written by Aiden The Linux User
 
 Github: https://github.com/AidenTheLinuxUser
 
 Quora:	https://www.quora.com/profile/Aiden-Calvert-2
-
-StackOverflow:
 """
 
 print desc
@@ -136,18 +144,70 @@ print "Checking for CGI...\n"
 
 time.sleep(1)
 
+
+
+
+
+
+
+
 requestCgiBin = requests.get(url + "/cgi-bin/")
 requestCgiSys = requests.get(url + "/cgi-sys/")
 
 cgiDetected = False
+cgiVuln = False
 
+
+
+#Checks if CGI-BIN 
 if requestCgiBin.status_code == 403: 
-	print "CGI-BIN Detected. Scanning for vulnerabilities..."
+	
+	print "CGI-BIN Detected. Scanning for vulnerabilities...\n"
 	cgiDetected = True
 	
+	requestHtmlScript = requests.get(url + "/cgi-bin/htmlscript")
+	
+	#Check for HTMLSCRIPT vulnerability on CGI
+	if checkAccess(requestHtmlScript):
+		print "CGI VULNERABILITY - HtmlScript found, this could be used for possible exploitation.\n"
+		cgiVuln = True
+	
+	requestDumpEnv = requests.get(url + "/cgi-bin/dumpenv") 
+	
+	#Check for DumpEnv vulnerability
+	if checkAccess(requestDumpEnv):
+		print "CGI VULNERABILITY - DumpEnv found, can reveal info on server.\n"
+		cgiVuln = True
+		
+	requestScriptDir = requests.get(url + "/cig-bin/scripts")
+	
+	#Check for /cgi-bin/scripts indexability
+	if checkAccess(requestScriptDir):
+		print "EXPLOIT - /cgi-bin/scripts/ may be indexable and/or readable!"
+		cgiVuln = True
+	
+	requestCounter = requests.get(url + "/cgi-bin/counterfiglet/")
+	
+	if checkAccess(requestCounter): 
+		print "VULN - CounterFiglet accessible, possible security vulnerability."
+	
+	
+	
+	
+	
+if cgiDetected == True and cgiVuln == False: 
+	print "No CGI Vulnerabilities found on CGI-BIN.\n" 
+
+
+#Check CGI-SYS
+cgiVuln = False
 if requestCgiSys.status_code == 403: 
 	print "CGI-SYS Detected. Scanning for vulnerabilities..."
 	cgiDetected = True 
+
+
+
+
 	
 if cgiDetected == False: 
 	print "No CGI Detected. Skipping these steps." 
