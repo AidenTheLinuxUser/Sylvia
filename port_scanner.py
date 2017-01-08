@@ -1,8 +1,6 @@
 
 
 import mechanize
-import urllib
-from bs4 import BeautifulSoup
 import time
 import requests
 import socket
@@ -12,37 +10,17 @@ import sys
 from datetime import datetime
 
 
-desc = """Welcome to the Sylvia Port Scanning Program
-Written by Aiden The Linux User
-
-
-Github: https://github.com/AidenTheLinuxUser
-
-Quora:	https://www.quora.com/profile/Aiden-Calvert-2
-"""
-
+desc = "Sylvia Port Scanner BETA 1.0\nWritten By Aiden Calvert"
+banner = "---------------------------------------------"
 print desc
+print banner 
+
 #Selection for port scanning
 
 #Opens instance of mechanize browser
 url = raw_input("\nEnter a URL or IP:\n> ")
 testBrowser = mechanize.Browser() 
 
-
-print "\n"
-
-robotsTXT = raw_input("Ignore Robots.txt?(Y/N)\n> ") 
-
-#Sets mechanize robots.txt settings to true or false
-if robotsTXT == "Y" or robotsTXT == "y":
-	print "Robots.txt will be ignored"
-	testBrowser.set_handle_robots(False)
-	ignoreRobots = True 
-	
-elif robotsTXT == "N" or robotsTXT == "n": 
-	print "Robots.txt will not be ignored"
-	testBrowser.set_handle_robots(True)
-	ignoreRobots = false
 
 print "\n"
 
@@ -80,10 +58,15 @@ time.sleep(1)
 #Slightly modified for uses of this program
 #Link to original code: http://www.pythonforbeginners.com/code-snippets-source-code/port-scanner-in-python
 
+#Displays Info on target site/ip
+print(banner)
+print("IP: " + websiteIp)
+print("Hostname: " + url) 
+print(banner)
 
 
 # Ask for input
-selections = raw_input("Choose a selection:\n\n1 - Use default port range.\n\n2 - Enter custom port range.\n> ") 
+selections = raw_input("Choose a selection:\n\n1 - Use default port range.\n2 - Enter custom port range.\n> ") 
 
 if selections == "1": 
 	useDefault = True 
