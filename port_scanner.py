@@ -152,5 +152,5 @@ print "Scanning Completed.\n "
 if foundPorts == False:
 	print "No ports within port range open"
 else:
-	print str(portAmount) + " found open."
+	print str(portAmount) + " ports found open."
 		
