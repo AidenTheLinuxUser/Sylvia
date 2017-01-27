@@ -2,4 +2,4 @@
 A python program that scans web pages/sites for exploits
 
 # Python Version
-When Mechanize supports 3.5, I'll move the code repo's over, until then, stop complaining. 
+Now that the code is no longer reliant on mechanize, 2 files will be released. One for 2.7 user and another for 3.5. You're welcome.
