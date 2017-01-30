@@ -106,8 +106,22 @@ if userSelection == 1:
 	else: 
 		websiteIp = socket.gethostbyname(urlIp)
 		
-	print("\n")
-
+	resolved = True 
+	if url[:8] == "https://":
+		urlIp = url[8:]
+	elif url[:7] == "http://":
+		urlIp = url[7:]
+	else:
+		resolved = False 
+		urlIp = "Unresolvable"
+	
+	#Finds websites IP
+	if resolved == False: 
+		websiteIp = "Unresolvable"  
+	else: 
+		websiteIp = socket.gethostbyname(urlIp)
+	
+	
 	try:
 		requestSite = requests.get(url) 
 	except:
@@ -115,13 +129,15 @@ if userSelection == 1:
 		sys.exit()
 	#Checks if site is running on apache 
 	try:
-		response = urllib.urlopen('http://www.google.com')
+		response = urllib.urlopen(url)
 		serverType = response.headers['Server']
 	except: 
 		serverType = "Unresolvable"
 	
-	
-	
+	websiteIp = socket.gethostbyname(urlIp)
+
+
+	time.sleep(1)
 
 
 	#Displays Info on target site/ip
@@ -333,11 +349,13 @@ if userSelection == 1:
 		
 			#Formats robots.txt to attempt to only have directory names
 			newString = readRobots.replace("Allow:", "")
+			newString = readRobots.replace("\n", "")
 			newString = readRobots.replace("User-agent: *", "")
 			newString = newString.replace("Disallow:", "") 
 			newString = newString.replace(first_line_robots, "")
 			newString = newString.replace(" ", "") 
 		
+			
 		
 			tempList = [] 
 			#Cycles through formatted robots.txt
@@ -345,10 +363,10 @@ if userSelection == 1:
 				#Adds characters of directory name to tempList 
 				if char != "\n": 
 					tempList.append(char)
-			
 				else: 
 					#Joins directory name into string
 					tempDir = ''.join(tempList)
+					tempDir = str(tempDir)
 					#Clear list and start over if not a valid link 
 					try: 
 						if tempDir[0] != "/": 
@@ -369,23 +387,20 @@ if userSelection == 1:
 					except: 
 						tempList = [] 
 						continue
-				
+		
 					#Prints out status code and checks if indexing is available on link
 					#Will only check indexing if directory exists (i.e not 404ing) 
-				
+					
+					
 					#Wont display URL if its 404ing
 					if dirConnect.status_code == 404: 
 						tempList = []		
 						continue 
 					print("- " + tempDir + " returning status code " + str(dirConnect.status_code))
+					tempList = [] 
 				
-					if dirConnect.status_code != 404: 
-						checkIndexingRobots(url, tempDir)
-					
-					#Adds one to dirNum, clears list and reruns loop
-					dirNum = dirNum + 1
-					tempList = []
-	
+				
+				
 		else: 
 			print " - Robots.txt not found. Skipping this step..."
 		#Removes robots.txt from current directory
