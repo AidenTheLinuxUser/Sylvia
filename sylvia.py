@@ -29,7 +29,6 @@ def checkAccess(request):
 	else: 
 		return False
 
-
 #Function to check indexing on a directory at the host name
 def checkIndexing(host, dirToCheck): 
 	indexing = False 
