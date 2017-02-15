@@ -76,8 +76,8 @@ interface = "Select an option:\n" + "1 - Exploit Scanner\n" + "2 - Port Scanner 
 
 banner = "---------------------------------------------"
 
-print(desc)
-print(banner) 
+
+
 
 
 #EXPLOIT SCANNER START
