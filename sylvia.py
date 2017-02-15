@@ -142,7 +142,7 @@ if 1 == 1:
 						"wp-conent/js", "images", "wp-login"]
 	
 	for direc in directoriesToCheck: 
-		if checkIndexing(url, direc) 
+		if checkIndexing(url, direc):
 			vulnNum = vulnNum + 1 
 			dirNum = dirNum + 1 
 		
