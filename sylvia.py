@@ -103,21 +103,6 @@ if 1 == 1:
 	else: 
 		websiteIp = socket.gethostbyname(urlIp)
 		
-	resolved = True 
-	if url[:8] == "https://":
-		urlIp = url[8:]
-	elif url[:7] == "http://":
-		urlIp = url[7:]
-	else:
-		resolved = False 
-		urlIp = "Unresolvable"
-	
-	#Finds websites IP
-	if resolved == False: 
-		websiteIp = "Unresolvable"  
-	else: 
-		websiteIp = socket.gethostbyname(urlIp)
-	
 	
 	try:
 		requestSite = requests.get(url) 
