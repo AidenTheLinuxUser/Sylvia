@@ -19,7 +19,7 @@ exploitNum = 0
 vulnNum = 0
 dirNum = 0
 
-#Used for chcking whether wordpress is being used 
+#Used for checking whether wordpress is being used 
 wordpress = False
 
 #Function to check if website is returning connection code
@@ -31,9 +31,13 @@ def checkAccess(request):
 
 #Function to check indexing on a directory at the host name
 def checkIndexing(host, dirToCheck): 
+	
 	indexing = False 
+	#Request the path then save its contents to readPath
 	requestPath = requests.get(host + "/" + dirToCheck + "/")
 	readPath = urllib.urlopen(host + "/" + dirToCheck + "/").read().decode('utf-8')
+	
+	#Check if site is open, then check for indexing
 	if requestPath.status_code == 200:
 		
 		#Checks if generic indexing page is there 
@@ -57,10 +61,13 @@ def checkIndexingRobots(host, dirToCheck):
 	indexing = False 
 	requestPath = requests.get(host + "/" + dirToCheck + "/")
 	
+	#Set readPath to content on page being checked
 	try: 
 		readPath = urllib.urlopen(host + "/" + dirToCheck + "/").read().decode('utf-8')
 	except:
 		return False
+	
+	#Check if path is reachable, then check if its being indexed 
 	if requestPath.status_code == 200:
 		if "Index of" in readPath: 
 			print("	+ VULNERABILITY - Indexing on /" + dirToCheck + "/")
@@ -82,17 +89,18 @@ banner = "---------------------------------------------"
 
 
 
-#EXPLOIT SCANNER START
+
 
 print "\nSylvia Exploit Scanner v1.01\nWritten by Aiden Calvert" 
 print banner
 
-#Opens instance of mechanize browser
+
 url = raw_input("\nEnter a URL or IP:\n> ")
-#Cuts out http and https to where host is resolvable by ip checker 
+
+
+
+#Cut http/https out of the URL string, for checking purposes
 resolved = True 
-
-
 if url[:8] == "https://":
 	urlIp = url[8:]
 	
@@ -103,20 +111,22 @@ else:
 	resolved = False 
 	urlIp = "Unresolvable"
 	
-#Finds websites IP
+	
+#Checks to see what the IP is and saves it to websiteIP
 if resolved == False: 
 	websiteIp = "Unresolvable"  
-	
 else: 
 	websiteIp = socket.gethostbyname(urlIp)
 		
 	
+#Check if site can be connected to
 try:
 	requestSite = requests.get(url) 
-	
 except:
 	print "Website refusing connections, did you enter the URL correctly?"
 	sys.exit()
+	
+	
 	
 #Checks what server site is running on 
 try:
@@ -157,8 +167,7 @@ for direc in directoriesToCheck:
 		
 		
 	
-	
-#Guess I'll just check wordpress login form ^_^
+
 wordpressLogin = requests.get(url + "/wp-login.php")
 
 if wordpressLogin.status_code == 200 or wordpress == True: 
@@ -264,15 +273,22 @@ if requestCgiSys.status_code == 200 or requestCgiSys.status_code == 403:
 		print("	+ CGI VULNERABILITY - CounterFiglet accessible, possible hazard.")
 		vulnNum = vulnNum + 1
 		cgiVuln = True
+		
+		
 #Checks if any vulns have been detected 
 if cgiDetected == True and cgiVuln == False: 
 	print("	+ No CGI Vulnerabilities found on CGI-SYS.")
+	
+	
 	
 #Checks if any CGI was detected, if not, it continues program
 if cgiDetected == False: 
 	print("- No CGI Detected. Skipping these steps.") 
 
 print banner
+
+
+
 
 requestRobotsTxt = requests.get(url + "/robots.txt") 
 
@@ -281,6 +297,7 @@ requestRobotsTxt = requests.get(url + "/robots.txt")
 if checkAccess(requestRobotsTxt):
 		 
 	#Downloads robots.txt
+	#Converts it to readable text
 	print("- Downloading robots.txt...")
 	with open('robots.txt','wb') as f:
 		f.write(urllib.urlopen(url + "/robots.txt").read())
@@ -291,7 +308,7 @@ if checkAccess(requestRobotsTxt):
 	with open('robots.txt', 'r') as f:
 		first_line_robots = f.readline()
 			
-	#Reads robots.txt and saves it to varaible readRobots
+	#Reads robots.txt and saves it to variable readRobots
 	robots = urllib.urlopen(url + "/robots.txt")
 	readRobots = robots.read().decode('utf-8') 
 		
@@ -342,6 +359,7 @@ if checkAccess(requestRobotsTxt):
 				tempList = []		
 				continue 
 			print("- " + tempDir + " returning status code " + str(dirConnect.status_code))
+			#Checks indexing on directories
 			if dirConnect.status_code == 200: 
 				checkIndexing(url,tempDir)
 			tempList = [] 
@@ -350,6 +368,8 @@ if checkAccess(requestRobotsTxt):
 				
 else: 
 	print " - Robots.txt not found. Skipping this step..."
+	
+
 #Removes robots.txt from current directory
 os.remove("robots.txt") 
 		
